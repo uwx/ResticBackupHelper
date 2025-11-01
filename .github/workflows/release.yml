@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+        dotnet-quality: 'preview'
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Publish Release
+      run: dotnet publish ResticBackupHelper/ResticBackupHelper.csproj -c Release
+    
+    - name: Create zip archive
+      run: 7z a ResticBackupHelper-win-x64.zip ./ResticBackupHelper/bin/Release/net10.0/win-x64/publish/*
+    
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ResticBackupHelper-win-x64
+        path: ResticBackupHelper-win-x64.zip
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: release/${{ github.sha }}
+        name: Release ${{ github.sha }}
+        files: ResticBackupHelper-win-x64.zip
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
