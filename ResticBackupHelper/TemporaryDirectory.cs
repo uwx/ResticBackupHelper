@@ -25,19 +25,19 @@ public class TemporaryDirectory : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public string FilePath { get; private set; }
+    public string DirectoryPath { get; private set; }
 
-    [MemberNotNull(nameof(FilePath))]
+    [MemberNotNull(nameof(DirectoryPath))]
     private void Create(string path)
     {
-        FilePath = path;
-        Directory.CreateDirectory(FilePath);
+        DirectoryPath = path;
+        Directory.CreateDirectory(DirectoryPath);
     }
 
     private void Delete()
     {
-        if (FilePath == null!) return;
-        Directory.Delete(FilePath, false);
-        FilePath = null!;
+        if (DirectoryPath == null!) return;
+        Directory.Delete(DirectoryPath, false);
+        DirectoryPath = null!;
     }
 }

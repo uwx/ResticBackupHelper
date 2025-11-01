@@ -6,6 +6,7 @@ public record YamlStructure
 {
     [YamlMember(Alias = "meta", ApplyNamingConventions = false)] public Meta Meta { get; set; } = null!;
     [YamlMember(Alias = "backups", ApplyNamingConventions = false)] public Dictionary<string, Backup> Backups { get; set; } = new();
+    [YamlMember(Alias = "ludusavi", ApplyNamingConventions = false)] public Ludusavi? Ludusavi { get; set; }
 }
 
 public record Backup
@@ -27,8 +28,19 @@ public record Meta
     [YamlMember(Alias = "restic-executable", ApplyNamingConventions = false)] public string ResticExecutable { get; set; } = "restic";
 }
 
+public record Ludusavi
+{
+    [YamlMember(Alias = "enable", ApplyNamingConventions = false)] public bool Enable { get; set; }
+    [YamlMember(Alias = "ludusavi-executable", ApplyNamingConventions = false)] public string LudusaviExecutable { get; set; } = "ludusavi";
+    [YamlMember(Alias = "ludusavi-tag", ApplyNamingConventions = false)] public string LudusaviTag { get; set; } = "Ludusavi";
+    [YamlMember(Alias = "additional-args", ApplyNamingConventions = false)] public string[] AdditionalArgs { get; set; } = [];
+    [YamlMember(Alias = "additional-restic-args", ApplyNamingConventions = false)] public string[] AdditionalResticArgs { get; set; } = [];
+    [YamlMember(Alias = "use-vss", ApplyNamingConventions = false)] public bool UseVss { get; set; } = false;
+}
+
 [YamlStaticContext]
 [YamlSerializable(typeof(YamlStructure))]
 [YamlSerializable(typeof(Backup))]
 [YamlSerializable(typeof(Meta))]
+[YamlSerializable(typeof(Ludusavi))]
 public partial class YamlStaticContext;
